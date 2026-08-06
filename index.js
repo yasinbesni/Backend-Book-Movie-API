@@ -3,12 +3,18 @@ import express from "express"
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
-app.get("/movies", (req, res) => {
-  res.send("Filmler görüntüleniyor.");
+app.post("/movies", (req, res) => {
+  console.log(req.body);
+
+  res.json({
+    data: req.body,
+  });
 });
 
 app.get("/about", (req, res) => {
