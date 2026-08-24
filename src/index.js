@@ -1,16 +1,38 @@
 import "dotenv/config";
 import express from "express";
-import { initMongoConnection } from "./db/InitMongoConnection/InitMongoConnection.js";
+
+import { initMongoConnection } from "./src/db/initMongoConnection.js";
+import { Movie } from "./src/db/models/movie.js";
 
 const app = express();
 
 app.use(express.json());
 
-// Önceki bölümlerde oluşturduğumuz
-// middleware ve Route'lar burada kalır.
+app.get("/", (req, res) => {
+  res.send("Merhaba Express!");
+});
 
-app.get("/movies", (req, res) => {
-  res.send("Filmler");
+app.post("/movies", async (req, res) => {
+  try {
+    const movie = new Movie({
+      title: req.body.title,
+      releaseYear: req.body.releaseYear,
+      voteAverage: req.body.voteAverage,
+    });
+
+    await movie.save();
+
+    res.status(201).json({
+      message: "Film oluşturuldu.",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Film oluşturulamadı.",
+    });
+  }
 });
 
 const startServer = async () => {
