@@ -1,8 +1,8 @@
 import "dotenv/config";
 import express from "express";
 
-import { initMongoConnection } from "./src/db/initMongoConnection.js";
-import { Movie } from "./src/db/models/movie.js";
+import { initMongoConnection } from "./db/initMongoConnection.js";
+import { Movie } from "./db/models/movie.js";
 
 const app = express();
 
@@ -12,12 +12,31 @@ app.get("/", (req, res) => {
   res.send("Merhaba Express!");
 });
 
+app.get("/movies", async (req, res) => {
+  try {
+    const movies = await Movie.find({});
+
+    res.status(200).json({
+      message: "Filmler getirildi.",
+      data: movies,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Filmler getirilemedi.",
+    });
+  }
+});
+
 app.post("/movies", async (req, res) => {
   try {
+    const { title, releaseYear, voteAverage } = req.body;
+
     const movie = new Movie({
-      title: req.body.title,
-      releaseYear: req.body.releaseYear,
-      voteAverage: req.body.voteAverage,
+      title,
+      releaseYear,
+      voteAverage,
     });
 
     await movie.save();
