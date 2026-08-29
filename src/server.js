@@ -10,8 +10,4 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.get("/", (req, res) => {
-  res.send("Merhaba Express!");
-});
-
-app.use("/movies", moviesRouter);
+app.use("/", moviesRouter);

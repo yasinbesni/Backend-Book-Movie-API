@@ -1,4 +1,4 @@
-export const requestLogger = (
+export const requestLogger = async(
   req,
   res,
   next,
