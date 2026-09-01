@@ -3,20 +3,14 @@ import mongoose from "mongoose";
 import { Movie } from "../db/models/movie.js";
 
 export const getMovies = async (req, res) => {
-  try {
-    const movies = await Movie.find({});
+ throw new Error("Test hatası");
 
-    res.status(200).json({
-      message: "Filmler getirildi.",
-      data: movies,
-    });
-  } catch (error) {
-    console.error(error);
+  const movies = await Movie.find({});
 
-    res.status(500).json({
-      message: "Filmler getirilemedi.",
-    });
-  }
+  res.status(200).json({
+    message: "Filmler getirildi.",
+    data: movies,
+  });
 };
 
 export const getMovieById = async (req, res) => {

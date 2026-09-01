@@ -3,6 +3,7 @@ import express from "express";
 import { requestLogger }
   from "./middlewares/requestLogger.js";
 import moviesRouter from "./routers/movies.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 export const app = express();
 
@@ -12,7 +13,9 @@ app.use(requestLogger);
 
 
 app.get("/", (req, res,) => {
-  res.send("Merhaba Express!");
+  res.send("Merhaba Express!🌹");
 });
 
 app.use("/movies", moviesRouter);
+
+app.use(errorHandler);
