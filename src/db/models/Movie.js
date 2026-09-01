@@ -7,9 +7,12 @@ const movieSchema = new mongoose.Schema({
   },
   releaseYear: {
     type: Number,
+    min: 1888,
   },
   voteAverage: {
     type: Number,
+    min: 0,
+    max: 10,
   },
 });
 
