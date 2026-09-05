@@ -33,15 +33,6 @@ const movieSchema = new mongoose.Schema(
   },
 );
 
-movieSchema.index(
-  {
-    title: 1,
-    releaseYear: 1,
-  },
-  {
-    unique: true,
-  },
-);
-
 export const Movie =
+  mongoose.models.Movie ||
   mongoose.model("Movie", movieSchema);
