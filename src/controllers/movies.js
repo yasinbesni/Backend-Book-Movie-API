@@ -16,7 +16,7 @@ export const getMovieById = async (req, res) => {
 
   if (!mongoose.isObjectIdOrHexString(movieId)) {
     return res.status(400).json({
-      message: "Geçersiz film kimliği.",
+      message: "Geçersiz film kimliği. ",
     });
   }
 
