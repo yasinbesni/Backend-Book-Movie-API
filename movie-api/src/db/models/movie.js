@@ -49,6 +49,26 @@ movieSchema.index(
   },
 );
 
+movieSchema.methods.isHighRated = function (
+  minVoteAverage = 8,
+) {
+  if (typeof this.voteAverage !== "number") {
+    return false;
+  }
+
+  return this.voteAverage >= minVoteAverage;
+};
+
+movieSchema.statics.countHighRated = function (
+  minVoteAverage = 8,
+) {
+  return this.countDocuments({
+    voteAverage: {
+      $gte: minVoteAverage,
+    },
+  });
+};
+
 movieSchema.query.forMovieList = function () {
   return this
     .select({
