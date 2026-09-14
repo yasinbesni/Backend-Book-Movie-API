@@ -2,12 +2,19 @@ import express from "express";
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/movies", (req, res) => {
   res.send("Filmler görüntüleniyor.");
 });
 
 app.post("/movies", (req, res) => {
-  res.send("Yeni film oluşturuluyor.");
+  const movie = req.body;
+
+  res.json({
+    message: "Film bilgileri alındı.", 
+    data: movie,
+  });
 });
 
 app.put("/movies/42", (req, res) => {
