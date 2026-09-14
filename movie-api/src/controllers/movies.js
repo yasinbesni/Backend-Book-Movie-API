@@ -37,6 +37,13 @@ export const getMovies = async (req, res) => {
 
   const moviesQuery = Movie.find(filter)
     .forMovieList()
+    .populate({
+      path: "director",
+      select: {
+        name: 1,
+        _id: 0,
+      },
+    })
     .skip(skip)
     .limit(limit)
     .lean();
@@ -67,7 +74,10 @@ export const getMovies = async (req, res) => {
   });
 };
 
-export const getMovieById = async (req, res) => {
+export const getMovieById = async (
+  req,
+  res,
+) => {
   const { movieId } = req.params;
 
   if (!mongoose.isObjectIdOrHexString(movieId)) {
@@ -76,7 +86,18 @@ export const getMovieById = async (req, res) => {
     });
   }
 
-  const movie = await Movie.findById(movieId);
+  const movieQuery = Movie.findById(movieId)
+    .populate({
+      path: "director",
+      select: {
+        name: 1,
+        birthYear: 1,
+        country: 1,
+        _id: 0,
+      },
+    });
+
+  const movie = await movieQuery.exec();
 
   if (movie === null) {
     return res.status(404).json({
