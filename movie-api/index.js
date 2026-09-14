@@ -1,9 +1,11 @@
-import { movies } from "./movieData.js";
-import { getFirstMovie, getMovieCount } from "./movieUtils.js";
-import createMessage from "./createMessage.js";
+import express from "express";
 
-console.log(createMessage());
+const app = express();
 
-console.log(movies);
-console.log("Film sayısı:", getMovieCount(movies));
-console.log("İlk film:", getFirstMovie(movies));
+app.get("/", (req, res) => {
+  res.send("Merhaba Express!");
+});
+
+app.listen(3000, () => {
+  console.log("Server 3000 portunda çalışıyor.");
+});
