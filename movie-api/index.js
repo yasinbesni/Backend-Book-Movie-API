@@ -12,6 +12,23 @@ app.get("/", (req, res) => {
   res.send("Merhaba Express!");
 });
 
+app.get("/movies", async (req, res) => {
+  try {
+    const movies = await Movie.find({});
+
+    res.status(200).json({
+      message: "Filmler getirildi.",
+      data: movies,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Filmler getirilemedi.",
+    });
+  }
+});
+
 app.post("/movies", async (req, res) => {
   try {
     const { title, releaseYear, voteAverage } = req.body;
@@ -38,9 +55,8 @@ app.post("/movies", async (req, res) => {
 });
 
 const startServer = async () => {
-    try {
-        
-    //await initMongoConnection();
+  try {
+    await initMongoConnection();
 
     app.listen(3000, () => {
       console.log("Server 3000 portunda çalışıyor.");
