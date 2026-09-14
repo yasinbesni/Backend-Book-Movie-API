@@ -148,6 +148,37 @@ app.patch("/movies/:movieId", async (req, res) => {
   }
 });
 
+app.delete("/movies/:movieId", async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!mongoose.isObjectIdOrHexString(movieId)) {
+      return res.status(400).json({
+        message: "Geçersiz film kimliği.",
+      });
+    }
+
+    const deletedMovie = await Movie.findByIdAndDelete(movieId);
+
+    if (deletedMovie === null) {
+      return res.status(404).json({
+        message: "Film bulunamadı.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Film silindi.",
+      data: deletedMovie,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Film silinemedi.",
+    });
+  }
+});
+
 const startServer = async () => {
   try {
     await initMongoConnection();
