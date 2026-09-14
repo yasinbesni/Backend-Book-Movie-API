@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import "./director.js";
+
 const movieSchema = new mongoose.Schema(
   {
     title: {
@@ -27,6 +29,10 @@ const movieSchema = new mongoose.Schema(
         "Film puanı 10'dan büyük olamaz.",
       ],
     },
+    director: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Director",
+    },
   },
   {
     timestamps: true,
@@ -40,6 +46,50 @@ movieSchema.index(
   },
   {
     unique: true,
+  },
+);
+
+movieSchema.methods.isHighRated = function (
+  minVoteAverage = 8,
+) {
+  if (typeof this.voteAverage !== "number") {
+    return false;
+  }
+
+  return this.voteAverage >= minVoteAverage;
+};
+
+movieSchema.statics.countHighRated = function (
+  minVoteAverage = 8,
+) {
+  return this.countDocuments({
+    voteAverage: {
+      $gte: minVoteAverage,
+    },
+  });
+};
+
+movieSchema.query.forMovieList = function () {
+  return this
+    .select({
+      title: 1,
+      releaseYear: 1,
+      voteAverage: 1,
+      director: 1,
+    })
+    .sort({
+      voteAverage: -1,
+      releaseYear: -1,
+      _id: 1,
+    });
+};
+
+movieSchema.pre(
+  "findOneAndUpdate",
+  function () {
+    this.setOptions({
+      runValidators: true,
+    });
   },
 );
 
