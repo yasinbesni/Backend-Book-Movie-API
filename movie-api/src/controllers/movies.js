@@ -1,19 +1,8 @@
-import "dotenv/config";
-import express from "express";
 import mongoose from "mongoose";
 
-import { initMongoConnection } from "./src/db/initMongoConnection.js";
-import { Movie } from "./src/db/models/movie.js";
+import { Movie } from "../db/models/movie.js";
 
-const app = express();
-
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("Merhaba Express!");
-});
-
-app.get("/movies", async (req, res) => {
+export const getMovies = async (req, res) => {
   try {
     const movies = await Movie.find({});
 
@@ -28,9 +17,9 @@ app.get("/movies", async (req, res) => {
       message: "Filmler getirilemedi.",
     });
   }
-});
+};
 
-app.get("/movies/:movieId", async (req, res) => {
+export const getMovieById = async (req, res) => {
   try {
     const { movieId } = req.params;
 
@@ -59,11 +48,15 @@ app.get("/movies/:movieId", async (req, res) => {
       message: "Film getirilemedi.",
     });
   }
-});
+};
 
-app.post("/movies", async (req, res) => {
+export const createMovie = async (req, res) => {
   try {
-    const { title, releaseYear, voteAverage } = req.body;
+    const {
+      title,
+      releaseYear,
+      voteAverage,
+    } = req.body;
 
     const movie = new Movie({
       title,
@@ -84,9 +77,9 @@ app.post("/movies", async (req, res) => {
       message: "Film oluşturulamadı.",
     });
   }
-});
+};
 
-app.patch("/movies/:movieId", async (req, res) => {
+export const updateMovieById = async (req, res) => {
   try {
     const { movieId } = req.params;
 
@@ -146,9 +139,9 @@ app.patch("/movies/:movieId", async (req, res) => {
       message: "Film güncellenemedi.",
     });
   }
-});
+};
 
-app.delete("/movies/:movieId", async (req, res) => {
+export const deleteMovieById = async (req, res) => {
   try {
     const { movieId } = req.params;
 
@@ -158,7 +151,8 @@ app.delete("/movies/:movieId", async (req, res) => {
       });
     }
 
-    const deletedMovie = await Movie.findByIdAndDelete(movieId);
+    const deletedMovie =
+      await Movie.findByIdAndDelete(movieId);
 
     if (deletedMovie === null) {
       return res.status(404).json({
@@ -177,19 +171,4 @@ app.delete("/movies/:movieId", async (req, res) => {
       message: "Film silinemedi.",
     });
   }
-});
-
-const startServer = async () => {
-  try {
-    await initMongoConnection();
-
-    app.listen(3000, () => {
-      console.log("Server 3000 portunda çalışıyor.");
-    });
-  } catch (error) {
-    console.error("Uygulama başlatılamadı.");
-  }
 };
-
-
-startServer();
