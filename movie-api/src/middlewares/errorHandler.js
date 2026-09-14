@@ -11,6 +11,12 @@ export const errorHandler = (
       error.errors,
     ).map((item) => item.message);
 
+    if (error.code === 11000) {
+  return res.status(409).json({
+    message: "Bu kayıt zaten mevcut.",
+  });
+}
+
     return res.status(400).json({
       message: "Gönderilen film bilgileri geçersiz.",
       errors,
