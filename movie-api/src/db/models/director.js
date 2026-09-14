@@ -18,8 +18,25 @@ const directorSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    id: false,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
+
+directorSchema.virtual("age").get(function () {
+  if (
+    this.birthYear === undefined ||
+    this.birthYear === null
+  ) {
+    return null;
+  }
+
+  const currentYear = new Date().getFullYear();
+
+  return currentYear - this.birthYear;
+});
 
 export const Director =
   mongoose.models.Director ||
