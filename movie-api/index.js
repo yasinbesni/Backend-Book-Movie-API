@@ -1,51 +1,46 @@
+import "dotenv/config";
 import express from "express";
 
-import "dotenv/config";
+import { initMongoConnection } from "./src/db/initMongoConnection.js";
+import { Movie } from "./src/db/models/movie.js";
 
 const app = express();
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log("Yeni bir Request geldi.");
-
-  next();
+app.get("/", (req, res) => {
+  res.send("Merhaba Express!");
 });
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+app.post("/movies", async (req, res) => {
+  try {
+    const { title, releaseYear, voteAverage } = req.body;
 
-  next();
-});
+    const movie = new Movie({
+      title,
+      releaseYear,
+      voteAverage,
+    });
 
-app.get("/movies", (req, res) => {
-  res.send("Filmler görüntüleniyor.");
-});
+    await movie.save();
 
-app.post("/movies", (req, res) => {
-  const movie = req.body;
+    res.status(201).json({
+      message: "Film oluşturuldu.",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
 
-  res.json({
-    message: "Film bilgileri alındı.", 
-    data: movie,
-  });
-});
-
-app.put("/movies/42", (req, res) => {
-  res.send("Film tamamen güncelleniyor.");
-});
-
-app.patch("/movies/42", (req, res) => {
-  res.send("Filmin belirli alanları güncelleniyor.");
-});
-
-app.delete("/movies/42", (req, res) => {
-  res.send("Film siliniyor.");
+    res.status(500).json({
+      message: "Film oluşturulamadı.",
+    });
+  }
 });
 
 const startServer = async () => {
-  try {
-    await initMongoConnection();
+    try {
+        
+    //await initMongoConnection();
 
     app.listen(3000, () => {
       console.log("Server 3000 portunda çalışıyor.");
