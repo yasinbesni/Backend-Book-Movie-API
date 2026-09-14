@@ -86,6 +86,68 @@ app.post("/movies", async (req, res) => {
   }
 });
 
+app.patch("/movies/:movieId", async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!mongoose.isObjectIdOrHexString(movieId)) {
+      return res.status(400).json({
+        message: "Geçersiz film kimliği.",
+      });
+    }
+
+    const movie = await Movie.findById(movieId);
+
+    if (movie === null) {
+      return res.status(404).json({
+        message: "Film bulunamadı.",
+      });
+    }
+
+    const {
+      title,
+      releaseYear,
+      voteAverage,
+    } = req.body;
+
+    const hasUpdate =
+      title !== undefined ||
+      releaseYear !== undefined ||
+      voteAverage !== undefined;
+
+    if (!hasUpdate) {
+      return res.status(400).json({
+        message: "Güncellenecek film bilgisi gönderilmedi.",
+      });
+    }
+
+    if (title !== undefined) {
+      movie.title = title;
+    }
+
+    if (releaseYear !== undefined) {
+      movie.releaseYear = releaseYear;
+    }
+
+    if (voteAverage !== undefined) {
+      movie.voteAverage = voteAverage;
+    }
+
+    await movie.save();
+
+    res.status(200).json({
+      message: "Film güncellendi.",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Film güncellenemedi.",
+    });
+  }
+});
+
 const startServer = async () => {
   try {
     await initMongoConnection();
