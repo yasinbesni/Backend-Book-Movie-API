@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import "./director.js";
+
 const movieSchema = new mongoose.Schema(
   {
     title: {
@@ -26,6 +28,10 @@ const movieSchema = new mongoose.Schema(
         10,
         "Film puanı 10'dan büyük olamaz.",
       ],
+    },
+    director: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Director",
     },
   },
   {
