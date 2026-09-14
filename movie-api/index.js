@@ -1,5 +1,7 @@
 import express from "express";
 
+import "dotenv/config";
+
 const app = express();
 
 app.use(express.json());
@@ -41,6 +43,16 @@ app.delete("/movies/42", (req, res) => {
   res.send("Film siliniyor.");
 });
 
-app.listen(3000, () => {
-  console.log("Server 3000 portunda çalışıyor.");
-});
+const startServer = async () => {
+  try {
+    await initMongoConnection();
+
+    app.listen(3000, () => {
+      console.log("Server 3000 portunda çalışıyor.");
+    });
+  } catch (error) {
+    console.error("Uygulama başlatılamadı.");
+  }
+};
+
+startServer();
