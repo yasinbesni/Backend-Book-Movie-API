@@ -10,19 +10,32 @@ import {
   calculatePaginationData,
 } from "../utils/calculatePaginationData.js";
 
+import {
+  buildMovieFilter,
+} from "../utils/buildMovieFilter.js";
+
 export const getMovies = async (req, res) => {
   const {
     page,
     limit,
   } = parsePaginationParams(req.query);
 
+  const {
+    filter,
+    error,
+  } = buildMovieFilter(req.query);
+
+  if (error !== null) {
+    return res.status(400).json({
+      message: error,
+    });
+  }
+
   const skip = (page - 1) * limit;
 
-  const totalItems =
-    await Movie.countDocuments({})
-      .exec();
+  const countQuery = Movie.countDocuments(filter);
 
-  const moviesQuery = Movie.find({})
+  const moviesQuery = Movie.find(filter)
     .sort({
       voteAverage: -1,
       releaseYear: -1,
@@ -30,6 +43,8 @@ export const getMovies = async (req, res) => {
     })
     .skip(skip)
     .limit(limit);
+
+  const totalItems = await countQuery.exec();
 
   const movies = await moviesQuery.exec();
 
