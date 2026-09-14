@@ -2,28 +2,24 @@ import express from "express";
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Merhaba Express!");
-});
-
 app.get("/movies", (req, res) => {
-  res.send("Filmler");
+  res.send("Filmler görüntüleniyor.");
 });
 
-app.get("/movies/42", (req, res) => {
-  res.send("Film bilgileri");
+app.post("/movies", (req, res) => {
+  res.send("Yeni film oluşturuluyor.");
 });
 
 app.put("/movies/42", (req, res) => {
-  res.send("Film tamamen güncellendi.");
+  res.send("Film tamamen güncelleniyor.");
 });
 
 app.patch("/movies/42", (req, res) => {
-  res.send("Filmin belirli alanları güncellendi.");
+  res.send("Filmin belirli alanları güncelleniyor.");
 });
 
 app.delete("/movies/42", (req, res) => {
-  res.send("Film silindi.");
+  res.send("Film siliniyor.");
 });
 
 app.listen(3000, () => {
