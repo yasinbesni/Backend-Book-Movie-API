@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import mongoose from "mongoose";
 
 import { initMongoConnection } from "./src/db/initMongoConnection.js";
 import { Movie } from "./src/db/models/movie.js";
@@ -25,6 +26,37 @@ app.get("/movies", async (req, res) => {
 
     res.status(500).json({
       message: "Filmler getirilemedi.",
+    });
+  }
+});
+
+app.get("/movies/:movieId", async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!mongoose.isObjectIdOrHexString(movieId)) {
+      return res.status(400).json({
+        message: "Geçersiz film kimliği.",
+      });
+    }
+
+    const movie = await Movie.findById(movieId);
+
+    if (movie === null) {
+      return res.status(404).json({
+        message: "Film bulunamadı.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Film getirildi.",
+      data: movie,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Film getirilemedi.",
     });
   }
 });
