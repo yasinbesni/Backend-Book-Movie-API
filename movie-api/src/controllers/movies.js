@@ -129,14 +129,6 @@ export const updateMovieById = async (req, res) => {
     });
   }
 
-  const movie = await Movie.findById(movieId);
-
-  if (movie === null) {
-    return res.status(404).json({
-      message: "Film bulunamadı.",
-    });
-  }
-
   const {
     title,
     releaseYear,
@@ -154,23 +146,42 @@ export const updateMovieById = async (req, res) => {
     });
   }
 
+  const fieldsToSet = {};
+
   if (title !== undefined) {
-    movie.title = title;
+    fieldsToSet.title = title;
   }
 
   if (releaseYear !== undefined) {
-    movie.releaseYear = releaseYear;
+    fieldsToSet.releaseYear = releaseYear;
   }
 
   if (voteAverage !== undefined) {
-    movie.voteAverage = voteAverage;
+    fieldsToSet.voteAverage = voteAverage;
   }
 
-  await movie.save();
+  const updateMovieQuery = Movie.findByIdAndUpdate(
+    movieId,
+    {
+      $set: fieldsToSet,
+    },
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
+
+  const updatedMovie = await updateMovieQuery.exec();
+
+  if (updatedMovie === null) {
+    return res.status(404).json({
+      message: "Film bulunamadı.",
+    });
+  }
 
   res.status(200).json({
     message: "Film güncellendi.",
-    data: movie,
+    data: updatedMovie,
   });
 };
 
