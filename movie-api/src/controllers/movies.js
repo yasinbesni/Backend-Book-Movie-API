@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 import { Movie } from "../db/models/movie.js";
 
 export const getMovies = async (req, res) => {
-  const movies = await Movie.find({});
+  const movies = await Movie.find({}).sort({
+    voteAverage: -1,
+    releaseYear: -1,
+    _id: 1,
+  });
 
   res.status(200).json({
     message: "Filmler getirildi.",
