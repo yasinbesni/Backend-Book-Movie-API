@@ -4,6 +4,18 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log("Yeni bir Request geldi.");
+
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+
+  next();
+});
+
 app.get("/movies", (req, res) => {
   res.send("Filmler görüntüleniyor.");
 });
